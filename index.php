@@ -1,93 +1,104 @@
-<?php
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8">
+		<title>[Mario Alberto Nolasco Aragón NA10021]</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/style.css">
+		<script src="js/jquery-3.7.1.min.js"></script>
+		<script src="js/bootstrap.bundle.min.js"></script>
+		<script src="js/sha1.js"></script>
+	</head>
+	<body>
+		<div class="container-fluid">
+			<div class="contenedor">
+				<div class="row align-items-center h-100">
+					<div class="col"></div>
+					<div class="col">
+						<div class="align-items-center">
+							<p>[Mario Alberto Nolasco Aragón NA10021]</p>
+							<form name="frm_login" id="frm_login" method="post" action="core/process.php">
+								<table>
+									<thead>
+										<tr>
+											<th class="parrafo_centrado">Inicio de sesión</th>
+										</tr>
+										<tr>
+											<th>&nbsp;</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>
+												<div class="form-row">
+													<div class="form-group col-md-6">
+														<label for="txt_usuario">Usuario: </label>
+														<input type="text" class="form-control" name="txt_usuario" id="txt_usuario" maxlength="15" aria-describedby="txt_user_help" required />
+														<small id="txt_user_help" class="form-text text-muted">El usuario es obligatorio</small>
+													</div>
+													<div class="form-group col-md-6">
+														<label for="txt_password">Contraseña: </label>
+														<input type="password" class="form-control" name="txt_password" id="txt_password" maxlength="15" aria-describedby="txt_password_help" required />
+														<small id="txt_password_help" class="form-text text-muted">La contraseña es obligatoria</small>
+													</div>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td align="center">
+												<button type="button" class="btn btn-primary" name="btn_entrar" id="btn_entrar">Iniciar sesión</button>
+												<div class="mensaje"></div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			funtion enviar_datos(u,p)
+			{
 
-$host_aceptados = array('localhost','127.0.0.1');
-$metodo_aceptado = 'POST';
-$usuario_correcto = "Admin";
-$password_correcto = "Admin";
-$txt_usuario = $_POST["txt_usuario"];
-$txt_password = $_POST["txt_password"];
-$token = "";
+				$.post(
+					$("#fmr_login").attr("action"), //ruta action
+				{
+					txt_usuario: u,
+					txt_password: p
 
-if(in_array($_SERVER["HTTP_HOST"], $host_aceptados) ){
- //La direccion ip es aceptada
-  if($_SERVER["REQUEST_METHOD"] == $metodo_aceptado){
-    //se acepta el metodo usado por el usuario
-    if(isset($txt_usuario) && !empty($txt_usuario)){
-        //Si se enviaron valores en el campo usuario.
-        if(isset($txt_password) && !empty($txt_password)){
-            //Si se envio el valor de la contraseña
-                if($txt_usuario==$usuario_correcto){
-                    //El valor ingresado del campo usuario es correcto
-                    if($txt_password==$password_correcto){
-                        //El valor ingresado del campo password es correcto
-                        $ruta = "welcome.php";
-                        $msg = "";
-                        $codigo_estado = 200;
-                        $texto_estado = "Ok";
-                        list($usec,$sex) = explode(' ', microtime());
-                        $token = base64_encode(date("Y-m-d H:i:s",$sec).substr($usec,1));
-                    }else{
-                         //El valor ingresado del campo password no es correcto
-                        $ruta = "";
-                        $msg = "ESA CONTRASEÑA NO MAJE";
-                        $codigo_estado = 400;
-                        $texto_estado = "Bad Request";
-                        $token = "";
-                    }
-                }else{
-                   // //El valor ingresado del campo usuario no es correcto
-                    $ruta = "";
-                    $msg = "ESE USUARIO NO MAJE";
-                    $codigo_estado = 401;
-                    $texto_estado = "Unauthorized";
-                    $token = "";
-                }
-        }else {
-            //El campo password esta vacio
-            $ruta = "welcome.php";
-            $msg = "ESTA VACIO MAJE";
-            $codigo_estado = 401;
-            $texto_estado = "Unauthorized";
-            $token = "";
-        }
-    }else{
-        //El campo usuario esta vacio
-        $ruta = "welcome.php";
-        $msg = "ESTA VACIO MAJE";
-        $codigo_estado = 401;
-        $texto_estado = "Unauthorized";
-        $token = "";
-    }
-  }else{
-    //El metodo usado por el usuario no es aceptado
-    $ruta = "welcome.php";
-    $msg = "NO ACEPTO ESTO MAJE";
-    $codigo_estado = 405;
-    $texto_estado = "Method Not Allowed";
-    $token = "";
-  }
-}else{
-//La direccion ip no es aceptada
-$ruta = "welcome.php";
-$msg = "NO ACEPTO ESTA IP MAJE";
-$codigo_estado = 403;
-$texto_estado = "Forbidden";
-$token = "";
-}
+				}
+			).done(function(datos){
+				window.location.replace(datos.data.url+"?token="+datos.data.token);
+			}).fail(function(xhr,status,error){
+					$(".mensaje").html(hxr.response.error.message)
+			});
+			$(document).ready(function(){
+				$("#btn_entrar").click(function(){
+					enviar_datos($("#txt_usuario"),$("#txt_password"));
 
-$arreglo_respuesta  = array(
-    "status" => ( (intval($codigo_estado) == 200)? "Ok": "Error" ),
-    "error" => ( (intval($codigo_estado) == 200) ? "": array("code"=>$codigo_estado,"message"=>$msg) ),
-    "data" => array(
-        "url"=>$ruta,
-        "token"=>$token
-    ),
-    "count"=>1
-);
+				});
 
- header("HTTP/1.1 ".$codigo_estado." ".$texto_estado);
- header("Content-Type: Aplication/json");
- echo($arreglo_respuesta);
+			$("#txt_usuario").keypress(function(event){
+
+				if(event.which == 13){
+					enviar_datos($("#txt_usuario"),$("#txt_passwword"));
+				}
+			});
+
+			$("#txt_password").keypress(function(event){
+				if(event.which ==13){
+					enviar_datos($("#txt_usuario"),$("#txt_password"))
+				}
+			}
+			);
+				
+			});
+			}
 
 
-?>
+
+	</body>
+</html>
