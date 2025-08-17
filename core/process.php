@@ -4,8 +4,8 @@ $host_aceptados = array('localhost','127.0.0.1');
 $metodo_aceptado = 'POST';
 $usuario_correcto = "Admin";
 $password_correcto = "Admin";
-$txt_usuario = $_POST["txt_usuario"];
-$txt_password = $_POST["txt_password"];
+$txt_usuario = ((isset($_POST["txt_usuario"])) ? $_POST["txt_usuario"] : null);
+$txt_password = ((isset($_POST["txt_password"])) ? $_POST["txt_password"] : null);
 $token = "";
 
 if(in_array($_SERVER["HTTP_HOST"], $host_aceptados) ){
@@ -29,7 +29,7 @@ if(in_array($_SERVER["HTTP_HOST"], $host_aceptados) ){
                     }else{
                          //El valor ingresado del campo password no es correcto
                         $ruta = "";
-                        $msg = "Contra incorrecta";
+                        $msg = "CONTRASENA INCORRECTA";
                         $codigo_estado = 400;
                         $texto_estado = "Bad Request";
                         $token = "";
@@ -37,39 +37,39 @@ if(in_array($_SERVER["HTTP_HOST"], $host_aceptados) ){
                 }else{
                    // //El valor ingresado del campo usuario no es correcto
                     $ruta = "";
-                    $msg = "Usuario Invalido";
+                    $msg = "NO SE RECONOCE EL USUARIO DIGITADO";
                     $codigo_estado = 401;
                     $texto_estado = "Unauthorized";
                     $token = "";
                 }
         }else {
             //El campo password esta vacio
-            $ruta = "";
-            $msg = "El campo contraseña esta vacio";
+            $ruta = "welcome.php";
+            $msg = "EL CAMPO DE CONTRASENA ESTA VACIO";
             $codigo_estado = 401;
             $texto_estado = "Unauthorized";
             $token = "";
         }
     }else{
         //El campo usuario esta vacio
-        $ruta = "";
-        $msg = "El campo usuario esta vacio";
+        $ruta = "welcome.php";
+        $msg = "EL CAMPO DE USUARIO ESTA VACIO";
         $codigo_estado = 401;
         $texto_estado = "Unauthorized";
         $token = "";
     }
   }else{
     //El metodo usado por el usuario no es aceptado
-    $ruta = "";
-    $msg = "No e¿se acepta ese metodo";
+    $ruta = "welcome.php";
+    $msg = "CAMPO DE USUARIO NO ACEPTADO";
     $codigo_estado = 405;
     $texto_estado = "Method Not Allowed";
     $token = "";
   }
 }else{
 //La direccion ip no es aceptada
-$ruta = "";
-$msg = "Ne acepta esa IP";
+$ruta = "welcome.php";
+$msg = "SU EQUIPO NO ESTA AUTORIZADO PARA REALIZAR ESA PETICION";
 $codigo_estado = 403;
 $texto_estado = "Forbidden";
 $token = "";
@@ -86,8 +86,8 @@ $arreglo_respuesta  = array(
 );
 
  header("HTTP/1.1 ".$codigo_estado." ".$texto_estado);
- header("Content-Type: Aplication/json");
- echo($arreglo_respuesta);
+ header("Content-Type: application/json");
+ echo json_encode($arreglo_respuesta);
 
 
 ?>

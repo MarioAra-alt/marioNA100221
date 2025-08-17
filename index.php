@@ -60,45 +60,45 @@
 			</div>
 		</div>
 		<script>
-			funtion enviar_datos(u,p)
+			function enviar_datos(u,p)
 			{
-
 				$.post(
-					$("#fmr_login").attr("action"), //ruta action
-				{
-					txt_usuario: u,
-					txt_password: p
+					$("#frm_login").attr("action"), //Ruta para envio de datos (URI)
+                    {
+                        txt_usuario: u,
+                        txt_password: p
 
-				}
-			).done(function(datos){
-				window.location.replace(datos.data.url+"?token="+datos.data.token);
-			}).fail(function(xhr,status,error){
-					$(".mensaje").html(hxr.response.error.message)
-			});
-			$(document).ready(function(){
-				$("#btn_entrar").click(function(){
-					enviar_datos($("#txt_usuario"),$("#txt_password"));
+                    }
+                ).done(function(datos){
+                    window.location.replace(datos.data.url+"?token="+datos.data.token);
+                }).fail(function(xhr,status,error){
+                        $(".mensaje").html(xhr.response.error.message)
+                });
+		    }
+           $(document).ready(function(){
+                //Si la persona presiona el boton "INICIAR SESSION"
+                $("#btn_entrar").click(function(){
+                    //Se ejecuta el envio de datos
+                    enviar_datos($("#txt_usuario").val(), $("#txt_password").val());
+
 
 				});
 
-			$("#txt_usuario").keypress(function(event){
+			//Si la persona presiona Enter mientra el focus esta en el campo
+                //txt_usuario
+                $("#txt_usuario").keypress(function(event){
+                    //Se evalua si la tecla presionada es Enter
+                    if(event.which == 13){
+                        //Se ejecuta la funcion enviar_datos()
+                        enviar_datos($("#txt_usuario").val(), $("#txt_password").val());
 
-				if(event.which == 13){
-					enviar_datos($("#txt_usuario"),$("#txt_passwword"));
 				}
 			});
 
-			$("#txt_password").keypress(function(event){
-				if(event.which ==13){
-					enviar_datos($("#txt_usuario"),$("#txt_password"))
-				}
-			}
-			);
-				
-			});
-			}
-
-
-
-	</body>
-</html>
+			//Si la persona presiona Enter mientra el focus esta en el campo
+                //txt_password
+                $("#txt_password").keypress(function(event){
+                    //Se evalua si la tecla presionada es Enter
+                    if(event.which ==13){
+                        //Se ejecuta la funcion enviar_datos()
+                        enviar_datos($("#txt_usuario").val(), $("#txt_password").val());
